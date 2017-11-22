@@ -1,0 +1,60 @@
+/******************************************************************
+auteur: Geraud LACHENY (2014)
+site web: http://www.geraudlacheny.fr
+/******************************************************************/
+
+#content {
+	margin: 100px auto; 
+	width: 300px;
+	padding: 10px;
+}
+form {
+	width: 100%
+}
+#logo, #identifiant, #mdp , #maintenir, #soumettre {
+	margin: 0 0 1.1em;
+	border: 0 none
+}
+#logo {
+	margin: 0 0 1.6em
+}
+#soumettre {
+	margin: 1.6em 0 0 0
+}
+input[type="submit"] {
+	font-size: 13px;
+	height: 33px;
+	margin: 0 1.5em 1.2em 0;
+	vertical-align: bottom;
+	background-color: #0072C6;
+	border: 1px solid #0072C6; 
+	border-radius: 2px;
+	border-color: #0072C6;
+	color: #FFFFFF;
+	line-height: 30px;
+	cursor: default;
+	display: inline-block;
+	font-weight: bold;
+	min-width: 46px;
+	padding: 0 8px;
+	text-align: center
+}
+input#txt_identifiant, input#txt_mdp {
+	font-size: 16px;
+	height: 32px;
+	line-height: 32px;
+	width: 94%;
+	padding: 0 8px;
+}
+input[type="text"]:focus, input[type="password"]:focus {
+	border: 1px solid #0072C6
+}
+.error {
+	display: block;
+	color: #C85305;
+	font-size: 12px;
+	min-height: 12px;
+}
+.placeholder {color: #aaa}
+::-webkit-input-placeholder {color: #aaa}
+:-moz-placeholder {color: #aaa}

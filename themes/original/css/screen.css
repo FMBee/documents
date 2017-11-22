@@ -1,0 +1,299 @@
+/******************************************************************
+auteur: Geraud LACHENY (2014)
+site web: http://www.geraudlacheny.fr
+/******************************************************************/
+
+/** generalites **/
+html {
+	min-height: 100%
+}
+
+body {
+	width: 100%;
+	padding: 0;
+	margin: 0;
+	font-family: 'Open Sans';
+	background-color: #E6EBF2
+}
+
+a {
+	text-decoration: none;
+	font-size: 12px;
+	color: #6a6350
+}
+
+.clear {
+	clear: both
+}
+
+.contenu {
+	width: 980px;
+	margin: auto
+}
+
+#info {
+	vertical-align: middle;
+	margin: 0 10px 0 0
+}
+
+.hover {
+	background-color: #E7F5FD
+}
+
+.stay {
+	background-color: #D5E7FC
+}
+
+/** entete **/
+header#entete {
+	overflow: hidden;
+	width: 100%;
+	height: 100%;
+	padding: 20px 0 20px 0
+}
+#logo {
+	float: left;
+	margin: 0 7.6%;
+	font-size: 40px;
+	color: #444	
+}
+#logout {
+	float: right;
+	margin-top: 35px
+}
+#logout  img{
+	margin: 0 0 0 5px;
+	vertical-align: top
+}
+
+/** fil d'Ariane **/
+nav#fildariane {
+	overflow: hidden;
+	width: 100%;
+	height: 50px;
+	margin: 0 0 3px 0
+}
+#fildariane .contenu {
+	overflow: hidden;
+	height: 50px;
+	background-color: #5486C4
+}
+#fildariane .racine img {
+	margin: 0 4px 0 0;
+	vertical-align: middle
+}
+#fildariane .contenu ul  {
+	height: 36px
+}
+#fildariane .contenu  li  {
+	float: left; 
+	margin-right: 10px
+}
+#fildariane .contenu  li  a {
+	font-size: 14px;
+	color: #FFFFFF	
+}
+
+/** vues **/
+div#vues {
+	overflow: hidden;
+	width: 100%;
+	margin: 0 0 1px 0
+}
+#vues .contenu ul {
+	float: right;
+	height: 20px;
+	margin: 0 0 5px 0;
+	list-style-type: none	
+}
+#vues .contenu  li {
+	float: left;
+	margin-right: 15px
+}
+#vues .contenu  a {
+	font-size: 10px
+}
+#vue_courante  a {
+	font-size: 14px !important
+}
+
+/** corps **/
+div#corps {
+	clear: both;
+	width: 100%;
+	min-height: 500px;
+	background-color: #E6EBF2
+}
+#corps .contenu {
+	overflow: hidden;
+	width: 960px;
+	padding: 10px;
+	background: #FFF url('../images/ligne-grise.jpg') repeat-y scroll 0 0
+}
+
+/** arborescence **/
+#arborescence {
+	float: left;
+	width: 190px;
+	min-height: 100%;
+	background-color: #F2F2F2
+}
+#arborescence ul {list-style-type:none;
+	margin: 10px;
+	padding: 0
+}
+#arborescence li img {
+	vertical-align: middle;
+	margin: 0 3px 0 0
+}
+#arborescence li {
+	margin: 0 0 3px 10px
+}
+#arborescence li.racine {
+	vertical-align: middle;
+	margin: 0 0 3px 0
+}
+#arborescence a {
+	font-size: 13px
+}
+
+/** contenu du repertoire **/
+#contenu_repertoire {
+	overflow: hidden;
+	min-height: 500px;
+	padding: 10px;
+	margin-bottom: 20px;
+	background-color: #FFF
+}
+
+
+/** page::index.php **/
+.element1 {
+	float: left;
+	overflow: hidden;
+	width: 350px;
+	padding: 5px;
+	margin: 2px;
+	cursor: default;	
+}
+.element1_1 {
+	float: left;
+	margin: 0 10px 0 0
+}
+.element1_2 {
+	height: 16px;
+	margin: 0 0 3px
+}
+.element1_2 span a {
+	font-size: 16px;
+	color: #000
+}
+.element1_3 {
+	height: 11px;
+	margin: 0 0 3px
+}
+.element1_3 span {
+	font-size: 11px;
+	color: #AAA
+}
+.element1_4 {
+	height: 11px
+}
+.element1_4 span {
+	font-size: 11px;
+	color: #AAA
+}
+
+/** page::index2.php **/
+table#tab_element2 {
+	width: 100%;
+	text-align: left	
+}
+#tab_element2  th {
+	padding: 7px;
+	background-color: #F8F8F8
+}
+#tab_element2  th img {
+	vertical-align: text-bottom
+}
+#tab_element2 th a {
+	font-size: 13px;
+	font-weight: normal;
+	color: #5486C4
+}
+#tab_element2 .element2 {
+	cursor: default
+}
+#tab_element2 .element2 td {
+	padding: 3px
+}
+#tab_element2 .element2 td img {
+	vertical-align: middle
+}
+.element2_1 {}
+.element2_2 {
+	font-size: 12px;
+	color: #AAA
+}
+.element2_3 {
+	font-size: 12px;
+	color: #AAA
+}
+.element2_4 {
+	font-size: 12px;
+	color: #AAA
+}
+
+/** page::index3.php **/
+.element3 {
+	float: left;
+	overflow: hidden;
+	width: 130px;
+	height: 200px;
+	padding: 5px;
+	margin: 2px;
+	cursor: default
+}
+.element3_1 {
+	position: relative;
+	width: 96px;
+	margin: auto
+}
+.element3_1 #glass {
+	position: absolute;
+	top: 0;
+	right: 0
+}
+.element3_2 {
+	width: 96px;
+	margin: auto;
+	text-align: center
+}
+.element3_2 span {
+	font-size: 14px;
+	color: #000;
+	word-wrap: break-word
+}
+
+/** pied de page**/
+footer#pieddepage {
+	height: 100px;
+	padding: 10px 0
+}
+#pieddepage ul {
+	list-style-type: none
+}
+#pieddepage li {
+	float: left;
+	margin: 0 10px 0 0
+}
+#pieddepage a {
+	font-size: 13px;
+	color: #1982D1
+}
+#pieddepage img {
+	width: 71px;
+	height: 25px;	
+	margin: 0 10px 0 0;
+	vertical-align: middle
+}

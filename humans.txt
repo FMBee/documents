@@ -1,0 +1,15 @@
+/* TEAM */
+	Web designer, Web developper: Geraud Lacheny
+	Twitter: @geraudlacheny
+	From: Angers, France
+
+/* THANKS */
+
+		
+
+/* SITE */
+	Last update: 2014/04/24
+	Language: French
+	Doctype: HTML5
+	Standards: HTML5, CSS3 
+	Component: jQuery
