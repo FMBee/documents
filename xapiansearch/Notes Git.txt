@@ -1,0 +1,40 @@
+
+- git clone <url> <dossier>
+	importer un repo
+
+- git init
+	initialiser un repo local
+
+- git add <file1> <file2>...
+	ajouter des fichiers à l'index (tracking)
+
+- git diff
+	modifs non committées
+
+- git commit -a -m "Titre"
+	committer toutes les modifs des fichiers à l'index
+	--dry-run : mode test
+
+- git push <remote>(origin) <branch>(master)
+	envoyer les modifications de branche sur un remote
+
+- git pull (fetch+merge)
+	recevoir la version repo de la branche active
+
+- git log
+	voir les logs des commit
+
+- git branch
+	liste des branches (* branche active)
+
+- git branch <branche>
+	créer une branche
+
+- git checkout <branche>
+	se positionner sur une branche
+
+- git merge <brancheB>
+	fusionner la branche courante avec la brancheB
+
+- git status
+	statut arborescence et index
