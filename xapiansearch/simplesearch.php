@@ -1,5 +1,5 @@
 <?php
-
+//pour simplesearch()
 print_r(getSearch());
 
 
