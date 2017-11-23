@@ -29,12 +29,13 @@ function removeAccents($chaine, $charset='utf-8') {
 function fixEncoding($chaine){
 	
 	/********** solution 1 pour l'encodage ( fonctionne sur serveur OVH) **********/
-	if( mb_detect_encoding($chaine) != 'UTF-8' )
-		$chaine = utf8_encode($chaine);
+// 	if( mb_detect_encoding($chaine) != 'UTF-8' )
+// 		$chaine = utf8_encode($chaine);
 	
 	/********** solution 2 pour l'encodage (fonctionne sur mon serveur local WAMP) **********/
 	// si la solution 1 ne fonctionne pas, commentez la solution 1 (lignes 32 et 33) et decommentez la solution 2 (ligne 37)
-	// $chaine = utf8_encode($chaine);
+//debug( mb_detect_encoding($chaine) );
+	$chaine = utf8_encode($chaine);
 
 	return $chaine;
 	
@@ -361,6 +362,47 @@ function listDir($repertoire_a_lister) {
 	
 }
 
+function listAllDirContent($currRep) {
+
+	global $t_repertoires_sensibles, $t_fichiers_sensibles, $t_extensions_sensibles, $orderby;
+	$t_fichiers = array();
+	
+	if (false !==($ressource = opendir($currRep))) {
+	
+		while (false !== ($entree = readdir($ressource)))  {
+		
+			if( is_dir($currRep."/".$entree) ) {	
+				
+				if( !in_array($entree, $t_repertoires_sensibles) && !preg_match("/^\./", $entree) ) {
+					
+					$t_fichiers[] = array(
+								'type' => 'dossier', 
+								'nom' => normalizeString($entree),
+								'url' => $currRep."/".$entree
+								);
+// 					'nom' =>  pathinfo($base.'/'.$entree, PATHINFO_FILENAME),
+// 					'extension' => pathinfo($base.'/'.$entree, PATHINFO_EXTENSION),
+// 					'nom.extension' => pathinfo($currRep.'/'.$entree, PATHINFO_BASENAME ),
+						
+					$t_fichiers = array_merge($t_fichiers, listAllDirContent($currRep."/".$entree));
+				}			
+			}
+			else {			
+				if( !in_array($entree, $t_fichiers_sensibles) && !in_array(strrchr($entree, '.'), $t_extensions_sensibles) ) {
+					
+					$t_fichiers[] = array(
+								'type' => 'fichier', 
+								'nom' => normalizeString($entree),
+								'url' => $currRep."/".$entree
+								);	
+				}
+			}
+		}
+		closedir($ressource);
+	}
+	return $t_fichiers;
+}
+
 function hasChildren($repertoire) {
 	
 	global $t_repertoires_sensibles;
@@ -409,5 +451,19 @@ function redirect($location) {
 	
 	die();
 
+}
+
+function debug($var)
+{
+	if (func_num_args() == 2)
+	{		//true : vers console
+		print_r($var);
+	}
+	else
+	{
+		echo "\n<!-- ";
+		print_r($var);
+		echo " -->\n";
+	}
 }
 ?>

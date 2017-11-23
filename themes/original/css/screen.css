@@ -5,7 +5,8 @@ site web: http://www.geraudlacheny.fr
 
 /** generalites **/
 html {
-	min-height: 100%
+	min-height: 100%;
+	background-color: #E6EBF2
 }
 
 body {
@@ -122,7 +123,7 @@ div#corps {
 	clear: both;
 	width: 100%;
 	min-height: 500px;
-	background-color: #E6EBF2
+/*	background-color: #E6EBF2 */
 }
 #corps .contenu {
 	overflow: hidden;

@@ -9,7 +9,7 @@ $fullPath = stripslashes($_GET['id']);
 
 // verification du non-envoi des entetes
 if( headers_sent() )
-die('Les ent&ecirc;tes sont dej&agrave; envoy&eacute;es');
+die('Les entêtes sont déjà envoyées');
 
 // requis en fonction des navigateurs
 if(ini_get('zlib.output_compression'))
@@ -52,5 +52,5 @@ if( file_exists($fullPath) ) {
 	readfile($fullPath);
 
 }
-else die('Fichier non trouv&eacute;');
+else die('Fichier non trouvé');
 ?>

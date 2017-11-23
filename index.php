@@ -7,6 +7,7 @@ site web: http://www.geraudlacheny.fr
 require_once('config/config.inc.php');
 require_once('config/settings.inc.php');
 require_once('lib/functions.php');
+require_once('lib/simplesearch.php');
 
 if( AUTHENTIFICATION == 'on' ){
 
@@ -40,7 +41,23 @@ if( isset($_GET['p']) && !empty($_GET['p']) ) {
 		$repertoire_courant = BASE;
 	}
 }
+
+debug($_POST);
+$titles  = isset($_POST['titlemode']);
+$query = !empty($_POST['query']) ? $_POST['query'] : '';
+
+if ($titles) {
+	
+	$results = listAllDirContent(BASE);
+	asort($results);
+}
+else {
+	$results = !empty($query) ? getSearch() : '';
+}
+//debug($results);
+
 ?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -50,13 +67,17 @@ if( isset($_GET['p']) && !empty($_GET['p']) ) {
 	<meta name="description" content="" />	
 	<!-- <meta name="robots" content="noindex,nofollow" />-->
 	
+	<!-- JQUERY -->
+<!-- 	<script src="js/jquery-1.11.0.min.js"></script>	 -->
+
+	<!-- Jquery, Datatables, Bootstrap  -->
+	<link rel="stylesheet" type="text/css" href="js/datatables.min.css"/>
+	<script type="text/javascript" src="js/datatables.min.js"></script>
+	
 	<!-- CSS -->
 	<link rel="stylesheet" href="themes/original/css/normalize.css" />
 	<link rel="stylesheet" href="themes/original/css/screen.css" />
 	<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
-	
-	<!-- JQUERY -->
-	<script src="js/jquery-1.11.0.min.js"></script>	
 	
 	<!-- SHADOWBOX -->
 	<script src="js/shadowbox-3.0.3/shadowbox.js"></script>
@@ -141,16 +162,117 @@ if( isset($_GET['p']) && !empty($_GET['p']) ) {
  
 <body>
 
+  <!-- Modal -->
+	  <div class="modal fade" id="searchModal" role="dialog">
+	    <div class="modal-dialog modal-lg">
+	    
+	      <!-- Modal content-->
+	      <div class="modal-content">
+	        <div class="modal-header">
+	          <button type="button" class="close" data-dismiss="modal">&times;</button>
+	          <h4 class="modal-title">
+	          <b>
+<?php
+	if ($titles) {
+		echo "Titres contenant le terme [{$query}]";
+	}
+	else{
+		echo "Documents contenant le terme [{$query}]";
+	}
+?>
+          	  </b>
+	          </h4>
+	        </div>
+	        <div class="modal-body">
+	        
+                 <div class="dataTable_wrapper">
+                   <table id="data-search" width="100%" class="table table-striped table-bordered table-hover" >
+						<thead>
+						  <tr>
+								<th>Description</th>
+								<th>Type</th>
+							</tr>
+						</thead>
+						
+						<tbody>
+<?php 
+	if (!empty($results)) {
+		
+		foreach ($results as $ligne) { 
+		
+			if (! $titles) { ?>
+			
+				<tr>
+					<td><?php echo substr($ligne[3], 0, 150) ?></td>
+					<td><?php echo $ligne[2] ?></td>
+				</tr>
+<?php
+			}
+			else{ ?>
+				<tr>
+					<td>
+						<a href="<?php echo $ligne['url'] ?>" target="blank">
+						<?php echo substr($ligne['nom'], 0, 80) ?>
+						</a>
+					</td>
+					<td><?php echo $ligne['type'] ?></td>
+				</tr>
+<?php 	
+			}
+		}
+	}
+?>						
+						</tbody>
+						
+					</table>
+				  </div>
+						        
+	        </div>
+	        <div class="modal-footer">
+	          <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+	        </div>
+	      </div>
+	      
+	    </div>
+	  </div>
+  
 	<header id="entete">
 		<div class="contenu">
 			<div id="logo">
 				<img alt="logo" src="themes/original/images/logo.png" />
 			</div><!-- fin logo -->
+			
 			<?php if(AUTHENTIFICATION == 'on') { ?>
 			<div id="logout">
 				<span style="color:#AAA;"><?php echo $_SESSION['auth'] ?></span>
-				<a title="Se d&eacute;connecter" href="deconnexion.php" onclick="return confirm('Etes-vous sur de vous d\351connecter ?')"><img alt="se deconnecter" src="themes/original/images/logout.png" /></a></div><!--fin logout -->
+				<a title="Se d&eacute;connecter" href="deconnexion.php" onclick="return confirm('Etes-vous sur de vous d\351connecter ?')"><img alt="se deconnecter" src="themes/original/images/logout.png" /></a>
+			</div><!--fin logout -->
 			<?php } ?>
+			
+			<br /><br /><br /><br /><br />
+			<div>
+				<form action="index.php" method="post" id="search">
+					
+						<div class="checkbox">
+						  <label><input type="checkbox" name="titlemode" value="">Titres uniquement</label>
+						</div>
+<!-- 					<div class="input-group"> -->
+<!-- 					  <span class="input-group-addon"> -->
+<!-- 					    <span class="glyphicon glyphicon-search"></span> -->
+<!-- 					  </span> -->
+<!-- 	     			  <input class="form-control" type="text" name="query" id="query" placeholder="Tapez votre recherche"> -->
+<!-- 					</div>  -->
+					
+					  <div class="input-group col-xs-6">
+					    <input type="text" class="form-control" name="query" id="query" placeholder="Tapez votre recherche">
+					    <div class="input-group-btn">
+					      <button class="btn btn-default" type="submit">
+					        <i class="glyphicon glyphicon-search"></i>
+					      </button>
+					    </div>
+					  </div>
+				</form>
+			</div>
 		</div><!-- fin contenu -->
 	</header>
 	
@@ -243,7 +365,7 @@ if( isset($_GET['p']) && !empty($_GET['p']) ) {
 						
 					<?php 
 					$contenu_repertoire = listDir($repertoire_courant);
-					
+//debug($contenu_repertoire);					
 					if( isset($contenu_repertoire) && !empty($contenu_repertoire) ){ ?>
 						
 							<?php foreach($contenu_repertoire as $element) { ?>
@@ -257,7 +379,7 @@ if( isset($_GET['p']) && !empty($_GET['p']) ) {
 								
 									case 'repertoire': 
 										?>
-										<td class="element2_1 repertoire" id="element_<?php echo rawurlencode($repertoire_courant."/".$element['nom']), "&amp;orderby=nom&amp;order=", $order ?>" title="<?php echo $element['nom.extension'] ?>">
+										<td class="element2_1 repertoire" id="element_<?php echo rawurlencode($repertoire_courant."/".$element['nom']), "&amp;orderby=nom&amp;order=", $order ?>" title="<?php echo $element['nom'] ?>">
 											<img alt="repertoire" src="themes/original/images/24/repertoire.png" />
 											<?php echo normalizeString($element['nom']) ?>
 										</td>
@@ -339,7 +461,43 @@ if( isset($_GET['p']) && !empty($_GET['p']) ) {
 				<li><a href="mailto: contact@geraudlacheny.fr">contact&nbsp;&raquo;</a></li>-->
 			</ul>
 		</div><!-- fin contenu -->
+		
 	</footer>
 
+	<script type="text/javascript">
+
+	    $('#data-search').DataTable( {
+	    	"search": {
+	    		    "search": <?php echo $titles ? "'$query'" : "''" ?>
+	    		  },
+	        "pagingType": "simple",
+	        "pageLength": 10,
+	        "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/French.json"
+            }
+		});
+
+		$('#query').focusin(function(){
+
+	        $(this).css("background-color", "#FFFFCC");
+	        $(this).val('');
+	    });
+// 		$('#query').keypress(function(event){
+
+// 	        if(event.key == 'Enter') {
+		        
+// 		        $('#search').submit();
+// 	        }
+// 	    });
+		<?php
+			if(! empty($query)) { 
+				
+				echo "$('#searchModal').modal({backdrop: 'static'});";
+			}
+		?>
+
+	    
+	</script>
 </body>
 </html>
+
