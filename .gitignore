@@ -1,0 +1,10 @@
+
+trash/
+#/deconnexion.php
+
+
+# eclipse project file
+.settings/
+.classpath
+.project
+.buildpath
