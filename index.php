@@ -44,6 +44,7 @@ if( isset($_GET['p']) && !empty($_GET['p']) ) {
 
 debug($_POST);
 $titles  = isset($_POST['titlemode']);
+$titles = true;
 $query = !empty($_POST['query']) ? $_POST['query'] : '';
 
 if ($titles) {
@@ -222,7 +223,7 @@ else {
 <?php 
 				}
 ?>					
-						<?php echo substr($ligne['nom'], 0, 80) ?>
+						<?php echo normalizeString(substr($ligne['nom'], 0, 80)) ?>
 						</a>
 					</td>
 					<td><?php echo $ligne['type'] ?></td>
@@ -264,7 +265,7 @@ else {
 				<form action="index.php" method="post" id="search">
 					
 						<div class="checkbox">
-						  <label><input type="checkbox" name="titlemode" value="">Titres uniquement</label>
+						  <label><input type="checkbox" name="titlemode" checked disabled>Titres uniquement</label>
 						</div>
 <!-- 					<div class="input-group"> -->
 <!-- 					  <span class="input-group-addon"> -->
@@ -399,11 +400,14 @@ else {
 										<?php break;
 										
 									case 'fichier':
+// debug('NOM:');
+// debug($repertoire_courant."/".$element['nom.extension']);
+// debug(urlencode($repertoire_courant."/".$element['nom.extension']));
 										if( in_array(strtolower($element['extension']), $t_extensions_reconnues) ) { 
 											?>
 											<td class="element2_1 fichier" id="element_<?php echo rawurlencode($repertoire_courant."/".$element['nom.extension']), "&amp;orderby=nom&amp;order=", $order ?>" title="<?php echo $element['nom.extension'] ?>">
 												<img alt="fichier" src="themes/original/images/24/<?php echo strtolower($element['extension']) ?>.png" />
-												<a href="<?php echo $repertoire_courant."/".$element['nom.extension'];?>"><?php echo shortenString(normalizeString($element['nom.extension']), 60) ?></a>
+												<a href="<?php echo ($repertoire_courant."/".$element['nom.extension']);?> " target="blank"><?php echo shortenString(normalizeString($element['nom.extension']), 60) ?></a>
 											</td>
 <!--											<td class="element2_2"><span><?php echo $t_extensions[strtolower($element['extension'])]?></span></td>
 -->  
