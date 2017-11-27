@@ -211,7 +211,17 @@ else {
 			else{ ?>
 				<tr>
 					<td>
+<?php 
+				if ($ligne['type'] == 'dossier') { ?>
+				
+						<a href="index.php?p=<?php echo $ligne['url'] ?>" target="blank">
+<?php 
+				}
+				else{ ?>
 						<a href="<?php echo $ligne['url'] ?>" target="blank">
+<?php 
+				}
+?>					
 						<?php echo substr($ligne['nom'], 0, 80) ?>
 						</a>
 					</td>
