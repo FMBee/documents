@@ -172,16 +172,14 @@ else {
 	        <div class="modal-header">
 	          <button type="button" class="close" data-dismiss="modal">&times;</button>
 	          <h4 class="modal-title">
-	          <b>
-<?php
-	if ($titles) {
-		echo "Titres contenant le terme [{$query}]";
-	}
-	else{
-		echo "Documents contenant le terme [{$query}]";
-	}
-?>
-          	  </b>
+          	  <div class="col-xs-6">
+		        <b>
+	 			<label>
+				<?php echo $titles ? "Titres contenant le terme" : "Documents contenant le terme" ?>
+				</label>
+        	  	</b>
+	          	<input id="mySearch" type="text" class="form-control" value="<?php echo $query ?>">
+          	  </div>
 	          </h4>
 	        </div>
 	        <div class="modal-body">
@@ -478,28 +476,58 @@ else {
 		
 	</footer>
 
+	
 	<script type="text/javascript">
 
-	    $('#data-search').DataTable( {
-	    	"search": {
+	  accentSearch = function ( data ) {
+			
+		    return ! data ?
+		        '' :
+		        typeof data === 'string' ?
+		            data
+		                .replace( /[uüû]/g, 	'[uüû]' )
+		                .replace( /[oôö]/g, 	'[oôö]' )
+		                .replace( /[aàâä]/g, 	'[aàâä]' )
+		                .replace( /[eéèêë]/g, 	'[eéèêë]' )
+		                .replace( /[iîï]/g, 	'[iîï]' )
+		                .replace( /cç/g, 		'[cç]' ) :
+		            data;
+	  };
+	
+	  $(document).ready(function() {
+		  
+	    var table = $('#data-search').DataTable( {
+
+	    	"dom": 'tip',
+ 	    	"search": {
+//		    		"regex": true,
+// 	    		    "caseInsensitive": true,
 	    		    "search": <?php echo $titles ? "'$query'" : "''" ?>
-	    		  },
+ 	    		  },
 	        "pagingType": "simple",
 	        "pageLength": 10,
 	        "language": {
                 "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/French.json"
             }
 		});
-
+		
+        $('#mySearch').keyup( function () {
+    	       table
+    	         .search(
+    	           accentSearch( this.value ),
+    	           true,	//regex
+    	           false	//smart
+    	         )
+    	         .draw()
+    	     } );		
+	    	
 		$('#query').focusin(function(){
 
 	        $(this).css("background-color", "#FFFFCC");
 	        $(this).val('');
 	    });
 // 		$('#query').keypress(function(event){
-
 // 	        if(event.key == 'Enter') {
-		        
 // 		        $('#search').submit();
 // 	        }
 // 	    });
@@ -510,7 +538,7 @@ else {
 			}
 		?>
 
-	    
+	  });   
 	</script>
 </body>
 </html>
