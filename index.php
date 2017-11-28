@@ -175,7 +175,7 @@ else {
           	  <div class="col-xs-6">
 		        <b>
 	 			<label>
-				<?php echo $titles ? "Titres contenant le terme" : "Documents contenant le terme" ?>
+				<?php echo $titles ? "Nom de document ou dossier contenant" : "Documents contenant le terme" ?>
 				</label>
         	  	</b>
 	          	<input id="mySearch" type="text" class="form-control" value="<?php echo $query ?>">
@@ -213,7 +213,7 @@ else {
 <?php 
 				if ($ligne['type'] == 'dossier') { ?>
 				
-						<a href="index.php?p=<?php echo rawurlencode($ligne['url']) ?>" target="blank">
+						<a href="index.php?p=<?php echo rawurlencode($ligne['url']) ?>">
 <?php 
 				}
 				else{ ?>
@@ -258,28 +258,24 @@ else {
 			</div><!--fin logout -->
 			<?php } ?>
 			
-			<br /><br /><br /><br /><br />
+			<br /><br /><br /><br /><br /><br />
 			<div>
 				<form action="index.php" method="post" id="search">
 					
-						<div class="checkbox">
-						  <label><input type="checkbox" name="titlemode" checked disabled>Titres uniquement</label>
-						</div>
-<!-- 					<div class="input-group"> -->
-<!-- 					  <span class="input-group-addon"> -->
-<!-- 					    <span class="glyphicon glyphicon-search"></span> -->
-<!-- 					  </span> -->
-<!-- 	     			  <input class="form-control" type="text" name="query" id="query" placeholder="Tapez votre recherche"> -->
-<!-- 					</div>  -->
-					
-					  <div class="input-group col-xs-6">
+<!-- 						<div class="checkbox"> -->
+<!-- 						  <label><input type="checkbox" name="titlemode" checked disabled>Par nom</label> -->
+<!-- 						</div> -->
+					<label class="radio-inline"><input type="radio" name="titlemode" checked>Par nom</label>
+					<label class="radio-inline"><input type="radio" name="titlemode" disabled>Par contenu</label>	
+					<br />
+					<div class="input-group col-xs-6">
 					    <input type="text" class="form-control" name="query" id="query" placeholder="Tapez votre recherche">
 					    <div class="input-group-btn">
 					      <button class="btn btn-default" type="submit">
 					        <i class="glyphicon glyphicon-search"></i>
 					      </button>
 					    </div>
-					  </div>
+					</div>
 				</form>
 			</div>
 		</div><!-- fin contenu -->
@@ -405,7 +401,7 @@ else {
 											?>
 											<td class="element2_1 fichier" id="element_<?php echo rawurlencode($repertoire_courant."/".$element['nom.extension']), "&amp;orderby=nom&amp;order=", $order ?>" title="<?php echo $element['nom.extension'] ?>">
 												<img alt="fichier" src="themes/original/images/24/<?php echo strtolower($element['extension']) ?>.png" />
-												<a href="<?php echo ($repertoire_courant."/".$element['nom.extension']);?> " target="blank"><?php echo shortenString(normalizeString($element['nom.extension']), 60) ?></a>
+												<a href="<?php echo ($repertoire_courant."/".$element['nom.extension']);?>" target="blank"><?php echo shortenString(normalizeString($element['nom.extension']), 60) ?></a>
 											</td>
 <!--											<td class="element2_2"><span><?php echo $t_extensions[strtolower($element['extension'])]?></span></td>
 -->  
@@ -499,11 +495,11 @@ else {
 	    var table = $('#data-search').DataTable( {
 
 	    	"dom": 'tip',
- 	    	"search": {
+// 	    	"search": {
 //		    		"regex": true,
 // 	    		    "caseInsensitive": true,
-	    		    "search": <?php echo $titles ? "'$query'" : "''" ?>
- 	    		  },
+//	    		    "search": <?php echo $titles ? "'$query'" : "''" ?>
+// 	    		  },
 	        "pagingType": "simple",
 	        "pageLength": 10,
 	        "language": {
@@ -511,6 +507,14 @@ else {
             }
 		});
 		
+    	table
+    	  .search(
+    	    accentSearch( <?php echo $titles ? "'$query'" : "''" ?> ),
+    	    true,	//regex
+    	    false	//smart
+    	  )
+    	  .draw();
+  	  
         $('#mySearch').keyup( function () {
     	       table
     	         .search(
@@ -518,7 +522,7 @@ else {
     	           true,	//regex
     	           false	//smart
     	         )
-    	         .draw()
+    	         .draw();
     	     } );		
 	    	
 		$('#query').focusin(function(){
