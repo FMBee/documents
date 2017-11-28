@@ -213,7 +213,7 @@ else {
 <?php 
 				if ($ligne['type'] == 'dossier') { ?>
 				
-						<a href="index.php?p=<?php echo $ligne['url'] ?>" target="blank">
+						<a href="index.php?p=<?php echo rawurlencode($ligne['url']) ?>" target="blank">
 <?php 
 				}
 				else{ ?>

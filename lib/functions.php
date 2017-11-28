@@ -28,16 +28,21 @@ function removeAccents($chaine, $charset='utf-8') {
 // detecte l'encodage d'une chaine de carateres et l'adapte
 function fixEncoding($chaine){
 	
-//debug( mb_detect_encoding($chaine) );
+	$codeCar = mb_detect_encoding($chaine, mb_detect_order(),true) ;
+//debug($codeCar);		
 	/********** solution 1 pour l'encodage ( fonctionne sur serveur OVH) **********/
-// 	if( mb_detect_encoding($chaine) != 'UTF-8' )
-// 		$chaine = utf8_encode($chaine);
+ 	if( $codeCar ) {
+ 		if( $codeCar != 'UTF-8' )
+			$chaine = mb_convert_encoding($chaine, "UTF-8", $codeCar);
+ 	}
+ 	else
+ 		$chaine = utf8_encode($chaine);
 	
 	/********** solution 2 pour l'encodage (fonctionne sur mon serveur local WAMP) **********/
 	// si la solution 1 ne fonctionne pas, commentez la solution 1 (lignes 32 et 33) et decommentez la solution 2 (ligne 37)
 // 	$chaine = utf8_encode($chaine);
 
-	$chaine = mb_convert_encoding($chaine, "UTF-8", mb_detect_encoding($chaine, "UTF-8, ASCII, ISO-8859-1", true));
+// 	$chaine = mb_convert_encoding($chaine, "UTF-8", mb_detect_encoding($chaine, "ASCII, ISO-8859-1", true));
 
 	return $chaine;
 	
