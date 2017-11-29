@@ -16,25 +16,27 @@ define('AUTHENTIFICATION', 'off' );
 
 /** adresse de l'hebergement MySQL. **/
 define('DB_SERVER', 'serveur_de_la_bdd');
-
 /** nom de la base de donnees. **/
 define('DB_NAME', 'nom_de_la_bdd');
-
 /** utilisateur de la base de donnees MySQL. **/
 define('DB_USER', 'utilisateur_de_la_bdd');
-
 /** mot de passe de la base de donnees MySQL. **/
 define('DB_PASSWORD', 'mdp_de_la_bdd');
-
 /** prefixe de la base de donnees. **/
 define('DB_PREFIX', '');
-
 /** jeu de caracteres a utiliser par la base de donnees lors de la creation des tables.   **/
 define('DB_CHARSET', 'utf8');
-
 /** clefs uniques d'authentification et salage. **/
 define('SALT', 'hg153Fi_0BPqefq545wjoe%');
 
+
+/****************************************************
+ XAPIAN                       
+****************************************************/
+/** repertoire base **/
+define('XAPIAN_BASE', 'xapiansearch/base1');
+define('XAPIAN_MAXSET', 100);
+define('XAPIAN_DATACUT', chr(10));
 
 /****************************************************
  EXPLORATEUR PHP                       

@@ -43,8 +43,8 @@ if( isset($_GET['p']) && !empty($_GET['p']) ) {
 }
 
 debug($_POST);
-$titles  = isset($_POST['titlemode']);
-$titles = true;
+
+$titles  = ($_POST['titlemode'] == 'name');
 $query = !empty($_POST['query']) ? $_POST['query'] : '';
 
 if ($titles) {
@@ -53,7 +53,7 @@ if ($titles) {
 	asort($results);
 }
 else {
-	$results = !empty($query) ? getSearch() : '';
+	$results = !empty($query) ? simpleSearch($query) : '';
 }
 //debug($results);
 
@@ -172,14 +172,20 @@ else {
 	        <div class="modal-header">
 	          <button type="button" class="close" data-dismiss="modal">&times;</button>
 	          <h4 class="modal-title">
-          	  <div class="col-xs-6">
-		        <b>
-	 			<label>
-				<?php echo $titles ? "Nom de document ou dossier contenant" : "Documents contenant le terme" ?>
-				</label>
-        	  	</b>
-	          	<input id="mySearch" type="text" class="form-control" value="<?php echo $query ?>">
-          	  </div>
+<?php
+	if ($titles) { ?>
+                <div class="col-xs-6">
+                  <b>
+                  <label>Nom de document ou dossier contenant</label>
+                  </b>
+                  <input id="mySearch" type="text" class="form-control warning" value="<?php echo $query ?>">
+                </div>
+<?php                
+	}
+    else{ ?>
+                <label>Documents contenant le terme [<b><?php echo $query ?></b>]</label>
+<?php
+    } ?>
 	          </h4>
 	        </div>
 	        <div class="modal-body">
@@ -188,9 +194,21 @@ else {
                    <table id="data-search" width="100%" class="table table-striped table-bordered table-hover" >
 						<thead>
 						  <tr>
-								<th>Description</th>
+<?php 
+	if (! $titles) { ?>                           
+								<th>N°</th>
+                            	<th>Nom</th>
+                            	<th>Auteur</th>
+								<th>Contenu</th>
+<!--                            	<th>Date</th>	-->
+<?php
+	}
+	else{ ?>                            
+								<th>Nom</th>
 								<th>Type</th>
-							</tr>
+<?php 
+	} ?>	
+                          </tr>
 						</thead>
 						
 						<tbody>
@@ -202,8 +220,15 @@ else {
 			if (! $titles) { ?>
 			
 				<tr>
-					<td><?php echo substr($ligne[3], 0, 150) ?></td>
-					<td><?php echo $ligne[2] ?></td>
+					<td><?php echo $ligne['pos'] ?></td>
+                  	<td>
+                      <a href="<?php echo $ligne['champs']['url'] ?>" target="blank">
+                      <?php echo substr($ligne['champs']['title'], 0, 60) ?>
+                      </a>
+                    </td>
+                  	<td><?php echo substr($ligne['champs']['author'], 0, 60) ?></td>
+                  	<td><?php echo substr($ligne['champs']['sample'], 0, 120) ?></td>
+<!--					<td><?php echo $ligne['champs']['modtime'] ?></td>	-->
 				</tr>
 <?php
 			}
@@ -219,8 +244,7 @@ else {
 				else{ ?>
 						<a href="<?php echo $ligne['url'] ?>" target="blank">
 <?php 
-				}
-?>					
+				} ?>					
 						<?php echo normalizeString(substr($ligne['nom'], 0, 80)) ?>
 						</a>
 					</td>
@@ -229,8 +253,7 @@ else {
 <?php 	
 			}
 		}
-	}
-?>						
+	} ?>						
 						</tbody>
 						
 					</table>
@@ -254,7 +277,7 @@ else {
 			<?php if(AUTHENTIFICATION == 'on') { ?>
 			<div id="logout">
 				<span style="color:#AAA;"><?php echo $_SESSION['auth'] ?></span>
-				<a title="Se d&eacute;connecter" href="deconnexion.php" onclick="return confirm('Etes-vous sur de vous d\351connecter ?')"><img alt="se deconnecter" src="themes/original/images/logout.png" /></a>
+				<a title="Se déconnecter" href="deconnexion.php" onclick="return confirm('Etes-vous sur de vous déconnecter ?')"><img alt="se deconnecter" src="themes/original/images/logout.png" /></a>
 			</div><!--fin logout -->
 			<?php } ?>
 			
@@ -265,8 +288,8 @@ else {
 <!-- 						<div class="checkbox"> -->
 <!-- 						  <label><input type="checkbox" name="titlemode" checked disabled>Par nom</label> -->
 <!-- 						</div> -->
-					<label class="radio-inline"><input type="radio" name="titlemode" checked>Par nom</label>
-					<label class="radio-inline"><input type="radio" name="titlemode" disabled>Par contenu</label>	
+					<label class="radio-inline"><input type="radio" name="titlemode" value="name" checked>Par nom</label>
+					<label class="radio-inline"><input type="radio" name="titlemode" value="content">Par contenu</label>	
 					<br />
 					<div class="input-group col-xs-6">
 					    <input type="text" class="form-control" name="query" id="query" placeholder="Tapez votre recherche">
@@ -491,16 +514,14 @@ else {
 	  };
 	
 	  $(document).ready(function() {
-		  
+
+<?php
+	if ($titles) { ?>
+        
 	    var table = $('#data-search').DataTable( {
 
 	    	"dom": 'tip',
-// 	    	"search": {
-//		    		"regex": true,
-// 	    		    "caseInsensitive": true,
-//	    		    "search": <?php echo $titles ? "'$query'" : "''" ?>
-// 	    		  },
-	        "pagingType": "simple",
+	        "pagingType": "full",
 	        "pageLength": 10,
 	        "language": {
                 "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/French.json"
@@ -511,7 +532,7 @@ else {
     	  .search(
     	    accentSearch( <?php echo $titles ? "'$query'" : "''" ?> ),
     	    true,	//regex
-    	    false	//smart
+    	    true	//smart
     	  )
     	  .draw();
   	  
@@ -520,11 +541,26 @@ else {
     	         .search(
     	           accentSearch( this.value ),
     	           true,	//regex
-    	           false	//smart
+    	           true	//smart
     	         )
     	         .draw();
     	     } );		
-	    	
+<?php
+    }
+	else{ ?>
+        
+	    var table = $('#data-search').DataTable( {
+
+	    	"dom": 'ftip',
+	        "pagingType": "full",
+	        "pageLength": 10,
+	        "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/French.json"
+            },
+		});        
+ <?php
+    } ?>
+        
 		$('#query').focusin(function(){
 
 	        $(this).css("background-color", "#FFFFCC");
@@ -539,8 +575,7 @@ else {
 			if(! empty($query)) { 
 				
 				echo "$('#searchModal').modal({backdrop: 'static'});";
-			}
-		?>
+			} ?>
 
 	  });   
 	</script>
