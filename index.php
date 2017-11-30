@@ -44,7 +44,7 @@ if( isset($_GET['p']) && !empty($_GET['p']) ) {
 
 debug($_POST);
 
-$titles  = ($_POST['titlemode'] == 'name');
+$titles  = !empty($_POST['titlemode']) ? ($_POST['titlemode'] == 'name'): true;
 $query = !empty($_POST['query']) ? $_POST['query'] : '';
 
 if ($titles) {
@@ -172,20 +172,17 @@ else {
 	        <div class="modal-header">
 	          <button type="button" class="close" data-dismiss="modal">&times;</button>
 	          <h4 class="modal-title">
-<?php
-	if ($titles) { ?>
+
+	<?php if ($titles): ?>
                 <div class="col-xs-6">
                   <b>
                   <label>Nom de document ou dossier contenant</label>
                   </b>
-                  <input id="mySearch" type="text" class="form-control warning" value="<?php echo $query ?>">
+                  <input id="mySearch" type="text" class="form-control warning" value="<?= $query ?>">
                 </div>
-<?php                
-	}
-    else{ ?>
-                <label>Documents contenant le terme [<b><?php echo $query ?></b>]</label>
-<?php
-    } ?>
+    <?php else: ?>
+                <label>Documents contenant le terme [<b><?= $query ?></b>]</label>
+    <?php endif; ?>
 	          </h4>
 	        </div>
 	        <div class="modal-body">
@@ -194,66 +191,56 @@ else {
                    <table id="data-search" width="100%" class="table table-striped table-bordered table-hover" >
 						<thead>
 						  <tr>
-<?php 
-	if (! $titles) { ?>                           
+	<?php if (! $titles): ?>                           
 								<th>N°</th>
                             	<th>Nom</th>
                             	<th>Auteur</th>
 								<th>Contenu</th>
 <!--                            	<th>Date</th>	-->
-<?php
-	}
-	else{ ?>                            
+	<?php else: ?>                            
 								<th>Nom</th>
 								<th>Type</th>
-<?php 
-	} ?>	
+	<?php endif; ?>	
                           </tr>
 						</thead>
 						
 						<tbody>
-<?php 
-	if (!empty($results)) {
+						
+	<?php if (!empty($results)): ?>
 		
-		foreach ($results as $ligne) { 
+		<?php foreach ($results as $ligne): ?> 
 		
-			if (! $titles) { ?>
+			<?php if (! $titles): ?>
 			
 				<tr>
-					<td><?php echo $ligne['pos'] ?></td>
+					<td><?= $ligne['pos'] ?></td>
                   	<td>
-                      <a href="<?php echo $ligne['champs']['url'] ?>" target="blank">
-                      <?php echo substr($ligne['champs']['title'], 0, 60) ?>
+                      <a href="<?= $ligne['champs']['url'] ?>" target="blank">
+                      <?= substr($ligne['champs']['title'], 0, 60) ?>
                       </a>
                     </td>
-                  	<td><?php echo substr($ligne['champs']['author'], 0, 60) ?></td>
-                  	<td><?php echo substr($ligne['champs']['sample'], 0, 120) ?></td>
-<!--					<td><?php echo $ligne['champs']['modtime'] ?></td>	-->
+                  	<td><?= substr($ligne['champs']['author'], 0, 60) ?></td>
+                  	<td><?= substr($ligne['champs']['sample'], 0, 120) ?></td>
+<!--					<td><?= $ligne['champs']['modtime'] ?></td>	-->
 				</tr>
-<?php
-			}
-			else{ ?>
+			<?php else: ?>
 				<tr>
 					<td>
-<?php 
-				if ($ligne['type'] == 'dossier') { ?>
+				<?php if ($ligne['type'] == 'dossier') : ?>
 				
-						<a href="index.php?p=<?php echo rawurlencode($ligne['url']) ?>">
-<?php 
-				}
-				else{ ?>
-						<a href="<?php echo $ligne['url'] ?>" target="blank">
-<?php 
-				} ?>					
-						<?php echo normalizeString(substr($ligne['nom'], 0, 80)) ?>
+						<a href="index.php?p=<?= rawurlencode($ligne['url']) ?>">
+				<?php else: ?>
+						<a href="<?= $ligne['url'] ?>" target="blank">
+				<?php endif; ?>					
+						<?= normalizeString(substr($ligne['nom'], 0, 80)) ?>
 						</a>
 					</td>
-					<td><?php echo $ligne['type'] ?></td>
+					<td><?= $ligne['type'] ?></td>
 				</tr>
-<?php 	
-			}
-		}
-	} ?>						
+				
+			<?php endif; ?>
+		<?php endforeach; ?>
+	<?php endif; ?>						
 						</tbody>
 						
 					</table>
@@ -274,12 +261,12 @@ else {
 				<img alt="logo" src="themes/original/images/logo.png" />
 			</div><!-- fin logo -->
 			
-			<?php if(AUTHENTIFICATION == 'on') { ?>
+			<?php if(AUTHENTIFICATION == 'on'): ?>
 			<div id="logout">
-				<span style="color:#AAA;"><?php echo $_SESSION['auth'] ?></span>
+				<span style="color:#AAA;"><?= $_SESSION['auth'] ?></span>
 				<a title="Se déconnecter" href="deconnexion.php" onclick="return confirm('Etes-vous sur de vous déconnecter ?')"><img alt="se deconnecter" src="themes/original/images/logout.png" /></a>
 			</div><!--fin logout -->
-			<?php } ?>
+			<?php endif; ?>
 			
 			<br /><br /><br /><br /><br /><br />
 			<div>
@@ -310,18 +297,21 @@ else {
 				<?php 
 				$noeud = 0;
 				$t_fildariane = array();
+				
 				foreach(getBreadcrumb($repertoire_courant) as $element) { 
+					
 					$noeud++;
 					$t_fildariane[] = $element;
 					$p = implode("/", $t_fildariane);
 					// j'affiche la racine
 					if($noeud == 1) { ?>
+					
 						<li class="racine"><a href="index.php"><img alt="racine" src="themes/original/images/repertoire.png" />Docs Groupe Garrigue</a></li>
 						<?php $nb_elements = count(getBreadcrumb($repertoire_courant));
-							if($nb_elements > 0) { ?>
+							if ($nb_elements > 0) {?>
 								<li><img alt="&gt;" src="themes/original/images/arrow.gif" /></li>
-							<?php } ?>						
-					<?php }
+						<?php }						
+					}
 					else {
 						echo "<li><a href=\"index.php?p=" , rawurlencode($p) , "&amp;orderby=nom&amp;order=". $order ."\">" , normalizeString($element) , "</a></li>";
 						// s'il n'y a pas d'elements enfants, on n'affiche pas le marqueur
@@ -349,14 +339,14 @@ else {
 			
 				<ul>
 					<li class="racine"><a href="index.php"><img alt="racine" src="themes/original/images/repertoire.png" />Docs Groupe Garrigue</a></li>
-					<?php foreach(getDir(BASE) as $element) { ?>
+					<?php foreach(getDir(BASE) as $element): ?>
 						<li>
-							<a href="index.php?p=<?php echo rawurlencode(BASE . "/" . $element['nom']) ?>">
+							<a href="index.php?p=<?= rawurlencode(BASE . "/" . $element['nom']) ?>">
 								<img alt="repertoire" src="themes/original/images/repertoire.png" />
-								<span <?php echo rawurlencode(BASE . "/" . $element['nom']) == rawurlencode($repertoire_courant) ? 'style="font-weight:bold"' : '' ?> title="<?php echo normalizeString($element['nom']) ?>"><?php echo shortenString(normalizeString($element['nom']), 37) ?></span><!-- CODE:  -->
+								<span <?= rawurlencode(BASE . "/" . $element['nom']) == rawurlencode($repertoire_courant) ? 'style="font-weight:bold"' : '' ?> title="<?= normalizeString($element['nom']) ?>"><?= shortenString(normalizeString($element['nom']), 37) ?></span><!-- CODE:  -->
 							</a>
 						</li>
-					<?php } ?>
+					<?php endforeach; ?>
 				</ul>
 			
 			</div><!-- fin arborescence -->
@@ -368,23 +358,23 @@ else {
 					<thead>
 						<tr>
 							<th style="width:49%;">
-								<a href="index.php?p=<?php echo rawurlencode($p) ?>&amp;orderby=nom&amp;order=<?php echo $order=='asc' ? 'desc' : ($order=='desc' ? 'asc' : 'asc') ?>">Nom</a>
-								<a href="index.php?p=<?php echo rawurlencode($p) ?>&amp;orderby=nom&amp;order=asc"><img alt="asc" src="themes/original/images/<?php echo $orderby=='nom' && $order=='asc' ? 'asc.png' : 'asc2.png' ?>" />
-								<a href="index.php?p=<?php echo rawurlencode($p) ?>&amp;orderby=nom&amp;order=desc"><img alt="desc" src="themes/original/images/<?php echo $orderby=='nom' && $order=='desc' ? 'desc.png' : 'desc2.png' ?>" />
+								<a href="index.php?p=<?= rawurlencode($p) ?>&amp;orderby=nom&amp;order=<?= $order=='asc' ? 'desc' : ($order=='desc' ? 'asc' : 'asc') ?>">Nom</a>
+								<a href="index.php?p=<?= rawurlencode($p) ?>&amp;orderby=nom&amp;order=asc"><img alt="asc" src="themes/original/images/<?= $orderby=='nom' && $order=='asc' ? 'asc.png' : 'asc2.png' ?>" />
+								<a href="index.php?p=<?= rawurlencode($p) ?>&amp;orderby=nom&amp;order=desc"><img alt="desc" src="themes/original/images/<?= $orderby=='nom' && $order=='desc' ? 'desc.png' : 'desc2.png' ?>" />
 							</th>
-<!--								<a href="index.php?p=<?php echo rawurlencode($p) ?>&amp;orderby=type&amp;order=<?php echo $order=='asc' ? 'desc' : ($order=='desc' ? 'asc' : 'asc') ?>">Type</a>
-								<a href="index.php?p=<?php echo rawurlencode($p) ?>&amp;orderby=type&amp;order=asc"><img alt="asc" src="themes/original/images/<?php echo $orderby=='type' && $order=='asc' ? 'asc.png' :  'asc2.png'  ?>" />
-								<a href="index.php?p=<?php echo rawurlencode($p) ?>&amp;orderby=type&amp;order=desc"><img alt="desc" src="themes/original/images/<?php echo $orderby=='type' && $order=='desc' ? 'desc.png' :  'desc2.png' ?>" />
+<!--								<a href="index.php?p=<?= rawurlencode($p) ?>&amp;orderby=type&amp;order=<?= $order=='asc' ? 'desc' : ($order=='desc' ? 'asc' : 'asc') ?>">Type</a>
+								<a href="index.php?p=<?= rawurlencode($p) ?>&amp;orderby=type&amp;order=asc"><img alt="asc" src="themes/original/images/<?= $orderby=='type' && $order=='asc' ? 'asc.png' :  'asc2.png'  ?>" />
+								<a href="index.php?p=<?= rawurlencode($p) ?>&amp;orderby=type&amp;order=desc"><img alt="desc" src="themes/original/images/<?= $orderby=='type' && $order=='desc' ? 'desc.png' :  'desc2.png' ?>" />
 							</th>-->
 							<th style="width:15%;">
-								<a href="index.php?p=<?php echo rawurlencode($p) ?>&amp;orderby=taille&amp;order=<?php echo $order=='asc' ? 'desc' : ($order=='desc' ? 'asc' : 'asc') ?>">Taille</a>
-								<a href="index.php?p=<?php echo rawurlencode($p) ?>&amp;orderby=taille&amp;order=asc"><img alt="asc" src="themes/original/images/<?php echo $orderby=='taille' && $order=='asc' ? 'asc.png' : 'asc2.png'  ?>" />
-								<a href="index.php?p=<?php echo rawurlencode($p) ?>&amp;orderby=taille&amp;order=desc"><img alt="desc" src="themes/original/images/<?php echo $orderby=='taille' && $order=='desc' ? 'desc.png' : 'desc2.png' ?>" />
+								<a href="index.php?p=<?= rawurlencode($p) ?>&amp;orderby=taille&amp;order=<?= $order=='asc' ? 'desc' : ($order=='desc' ? 'asc' : 'asc') ?>">Taille</a>
+								<a href="index.php?p=<?= rawurlencode($p) ?>&amp;orderby=taille&amp;order=asc"><img alt="asc" src="themes/original/images/<?= $orderby=='taille' && $order=='asc' ? 'asc.png' : 'asc2.png'  ?>" />
+								<a href="index.php?p=<?= rawurlencode($p) ?>&amp;orderby=taille&amp;order=desc"><img alt="desc" src="themes/original/images/<?= $orderby=='taille' && $order=='desc' ? 'desc.png' : 'desc2.png' ?>" />
  							</th> 
 							<th style="width:16%;">
-								<a href="index.php?p=<?php echo rawurlencode($p) ?>&amp;orderby=date&amp;order=<?php echo $order=='asc' ? 'desc' : ($order=='desc' ? 'asc' : 'asc') ?>">Modifi&eacute; le</a>
-								<a href="index.php?p=<?php echo rawurlencode($p) ?>&amp;orderby=date&amp;order=asc"><img alt="asc" src="themes/original/images/<?php echo $orderby=='date' && $order=='asc' ? 'asc.png' : 'asc2.png' ?>" />
-								<a href="index.php?p=<?php echo rawurlencode($p) ?>&amp;orderby=date&amp;order=desc"><img alt="desc" src="themes/original/images/<?php echo $orderby=='date' && $order=='desc' ? 'desc.png' : 'desc2.png' ?>" />
+								<a href="index.php?p=<?= rawurlencode($p) ?>&amp;orderby=date&amp;order=<?= $order=='asc' ? 'desc' : ($order=='desc' ? 'asc' : 'asc') ?>">Modifi&eacute; le</a>
+								<a href="index.php?p=<?= rawurlencode($p) ?>&amp;orderby=date&amp;order=asc"><img alt="asc" src="themes/original/images/<?= $orderby=='date' && $order=='asc' ? 'asc.png' : 'asc2.png' ?>" />
+								<a href="index.php?p=<?= rawurlencode($p) ?>&amp;orderby=date&amp;order=desc"><img alt="desc" src="themes/original/images/<?= $orderby=='date' && $order=='desc' ? 'desc.png' : 'desc2.png' ?>" />
 							</th>
 						</tr>
 					</thead>
@@ -394,82 +384,77 @@ else {
 					<?php 
 					$contenu_repertoire = listDir($repertoire_courant);
 //debug($contenu_repertoire);					
-					if( isset($contenu_repertoire) && !empty($contenu_repertoire) ){ ?>
+					if( isset($contenu_repertoire) && !empty($contenu_repertoire) ) {
 						
-							<?php foreach($contenu_repertoire as $element) { ?>
+							foreach($contenu_repertoire as $element) {
 							
-								<?php //if ( ($element['extension'] != 'cache') || (substr($element['nom'], -6) != '.cache' )) { ?>
+								//if ( ($element['extension'] != 'cache') || (substr($element['nom'], -6) != '.cache' )) { 
 								
-								<tr class="element2">
+								echo '<tr class="element2">';
 								
-								<?php 
 								switch($element['type']) {
 								
-									case 'repertoire': 
-										?>
-										<td class="element2_1 repertoire" id="element_<?php echo rawurlencode($repertoire_courant."/".$element['nom']), "&amp;orderby=nom&amp;order=", $order ?>" title="<?php echo $element['nom'] ?>">
+									case 'repertoire': ?>
+									
+										<td class="element2_1 repertoire" id="element_<?= rawurlencode($repertoire_courant."/".$element['nom']), "&amp;orderby=nom&amp;order=", $order ?>" title="<?= $element['nom'] ?>">
 											<img alt="repertoire" src="themes/original/images/24/repertoire.png" />
-											<?php echo normalizeString($element['nom']) ?>
+											<?= normalizeString($element['nom']) ?>
 										</td>
 <!-- 										<td class="element2_2"><span>Dossier de fichiers</span></td> -->
 										<td class="element2_3">&nbsp;</td>
 										<td class="element2_4">&nbsp;</td>
+										
 										<?php break;
 										
 									case 'fichier':
 // debug('NOM:');
 // debug($repertoire_courant."/".$element['nom.extension']);
 // debug(urlencode($repertoire_courant."/".$element['nom.extension']));
-										if( in_array(strtolower($element['extension']), $t_extensions_reconnues) ) { 
-											?>
-											<td class="element2_1 fichier" id="element_<?php echo rawurlencode($repertoire_courant."/".$element['nom.extension']), "&amp;orderby=nom&amp;order=", $order ?>" title="<?php echo $element['nom.extension'] ?>">
-												<img alt="fichier" src="themes/original/images/24/<?php echo strtolower($element['extension']) ?>.png" />
-												<a href="<?php echo ($repertoire_courant."/".$element['nom.extension']);?>" target="blank"><?php echo shortenString(normalizeString($element['nom.extension']), 60) ?></a>
+										if( in_array(strtolower($element['extension']), $t_extensions_reconnues) ) { ?>
+										
+											<td class="element2_1 fichier" id="element_<?= rawurlencode($repertoire_courant."/".$element['nom.extension']), "&amp;orderby=nom&amp;order=", $order ?>" title="<?= $element['nom.extension'] ?>">
+												<img alt="fichier" src="themes/original/images/24/<?= strtolower($element['extension']) ?>.png" />
+												<a href="<?= ($repertoire_courant."/".$element['nom.extension']);?>" target="blank"><?= shortenString(normalizeString($element['nom.extension']), 60) ?></a>
 											</td>
-<!--											<td class="element2_2"><span><?php echo $t_extensions[strtolower($element['extension'])]?></span></td>
+<!--											<td class="element2_2"><span><?= $t_extensions[strtolower($element['extension'])]?></span></td>
 -->  
-											<td class="element2_3"><?php echo formatSize($element['taille']) ?></td>
-											<td class="element2_4"><?php echo date('d/m/Y', $element['date']) ?></td>
-								
+											<td class="element2_3"><?= formatSize($element['taille']) ?></td>
+											<td class="element2_4"><?= date('d/m/Y', $element['date']) ?></td>
 										
 										<?php }
 										else { ?>
 										
-											<td class="element2_1 inconnu" id="element_<?php echo rawurlencode($repertoire_courant."/".$element['nom.extension']), "&amp;orderby=nom&amp;order=", $order ?>" title="<?php echo $element['nom.extension'] ?>">
+											<td class="element2_1 inconnu" id="element_<?= rawurlencode($repertoire_courant."/".$element['nom.extension']), "&amp;orderby=nom&amp;order=", $order ?>" title="<?= $element['nom.extension'] ?>">
 												<img alt="inconnu" src="themes/original/images/24/inconnu.png" />
-												<a href="<?php echo $repertoire_courant."/".$element['nom.extension'];?>"><?php echo shortenString(normalizeString($element['nom.extension']), 60) ?></a>
+												<a href="<?= $repertoire_courant."/".$element['nom.extension'];?>"><?= shortenString(normalizeString($element['nom.extension']), 60) ?></a>
 											</td>
 <!--											<td class="element2_2"><span>&nbsp;</span></td>
--->											<td class="element2_3"><?php echo formatSize($element['taille'])?></td>
-											<td class="element2_4"><?php echo date('d/m/Y', $element['date']) ?></td>
+-->											<td class="element2_3"><?= formatSize($element['taille'])?></td>
+											<td class="element2_4"><?= date('d/m/Y', $element['date']) ?></td>
 								
 										<?php }
 										break;
 										
 									case 'image': ?>
 									
-										<td class="element2_1 image" id="element_<?php echo rawurlencode($repertoire_courant."/".$element['nom.extension']), "&amp;orderby=nom&amp;order=", $order ?>" title="<?php echo $element['nom.extension'] ?>">
-											<img alt="image" src="themes/original/images/24/<?php echo strtolower($element['extension']) ?>.png" />
-											<a href="<?php echo $repertoire_courant."/".$element['nom.extension'];?>"><?php echo shortenString(normalizeString($element['nom.extension']), 60) ?></a>
+										<td class="element2_1 image" id="element_<?= rawurlencode($repertoire_courant."/".$element['nom.extension']), "&amp;orderby=nom&amp;order=", $order ?>" title="<?= $element['nom.extension'] ?>">
+											<img alt="image" src="themes/original/images/24/<?= strtolower($element['extension']) ?>.png" />
+											<a href="<?= $repertoire_courant."/".$element['nom.extension'];?>"><?= shortenString(normalizeString($element['nom.extension']), 60) ?></a>
 										</td>
-<!--										<td class="element2_2"><span><?php echo $t_extensions[strtolower($element['extension'])]?></span></td>
--->										<td class="element2_3"><?php echo formatSize($element['taille'])?></td>
-										<td class="element2_4"><?php echo date('d/m/Y', $element['date']) ?></td>
+<!--										<td class="element2_2"><span><?= $t_extensions[strtolower($element['extension'])]?></span></td>
+-->										<td class="element2_3"><?= formatSize($element['taille'])?></td>
+										<td class="element2_4"><?= date('d/m/Y', $element['date']) ?></td>
+
 										<?php break;			
-							
-								} ?>
-								
-								</tr>
-							
-								<?php }//} ?>
-						
-						<?php }
+								} 
+								echo '</tr>';
+							}
+						}
 						else { ?>
 						
 							<tr><td><img id="info" alt="[i]" src="themes/original/images/info.png" />R&eacute;pertoire vide</td></tr>
 							
 						<?php } ?>
-						
 						</tbody>
 						
 						<tfoot></tfoot>
@@ -515,8 +500,7 @@ else {
 	
 	  $(document).ready(function() {
 
-<?php
-	if ($titles) { ?>
+	<?php if ($titles): ?>
         
 	    var table = $('#data-search').DataTable( {
 
@@ -530,7 +514,7 @@ else {
 		
     	table
     	  .search(
-    	    accentSearch( <?php echo $titles ? "'$query'" : "''" ?> ),
+    	    accentSearch( <?= $titles ? "'$query'" : "''" ?> ),
     	    true,	//regex
     	    true	//smart
     	  )
@@ -545,9 +529,7 @@ else {
     	         )
     	         .draw();
     	     } );		
-<?php
-    }
-	else{ ?>
+	<?php else: ?>
         
 	    var table = $('#data-search').DataTable( {
 
@@ -558,8 +540,8 @@ else {
                 "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/French.json"
             },
 		});        
- <?php
-    } ?>
+
+	<?php endif; ?>
         
 		$('#query').focusin(function(){
 
@@ -571,11 +553,11 @@ else {
 // 		        $('#search').submit();
 // 	        }
 // 	    });
-		<?php
-			if(! empty($query)) { 
-				
-				echo "$('#searchModal').modal({backdrop: 'static'});";
-			} ?>
+	<?php if(! empty($query)): ?> 
+		
+		$('#searchModal').modal({backdrop: 'static'});
+		
+	<?php endif; ?>
 
 	  });   
 	</script>
