@@ -31,7 +31,9 @@ function simpleSearch ($paramQuery) {
 //        print "{$matches->get_matches_estimated()} results found:<br/><br/>";
         $results = array();
 
-        foreach ($matches->begin() as $i => $docid) {
+        $i = $matches->begin();
+        
+        while (! $i->equals($matches->end())) {
 
           $line = array();
           
@@ -42,6 +44,7 @@ function simpleSearch ($paramQuery) {
           $line['champs'] = cutData( $i->get_document()->get_data() );
          
           $results[] = $line;
+          $i->next();
         }
         return $results;
 
