@@ -1,48 +1,46 @@
-
-****
-LAMP stack
-
-https://www.turnkeylinux.org/lampstack
-
-http://www.mirrorservice.org/sites/turnkeylinux.org/images/ova/turnkey-lamp-14.2-jessie-amd64.ova
-
-
-
-
-****
+﻿****
 Installing Xapian
-	https://xapian.org/docs/install.html
+        https://xapian.org/docs/install.html
+
 
 Build environment
 
+
 Options:
         - installer compiler C
-        	apt-get install build-essential (+ zx-utils, gcc, make, dpkg, bzip, ...)
+                apt-get install build-essential (+ zx-utils, gcc, make, dpkg, bzip, ...)
         - installer zlib
-        	apt-get install zlib1g-dev
-        	
+                apt-get install zlib1g-dev
+                
 These instructions assume a Linux® or other UNIX®-like environment. In a Windows environment, you can use GCC with mingw, cygwin, or MSVC.
 The Xapian component is provided as a simple tar.gz download and can be built using the usual configure and make steps. First, unpack the archive by typing:
+
 
   $ tar -zxf xapian-core-1.2.0.tar.gz
 ou
   $ tar -Jxf xapian-core-1.2.0.tar.xz
+
 
   ./configure
   make
   make install
 
 
+
+
 ****
 Installing Omega
 
+
 Options:
         - installer librairie libmagic
-        	apt-get install libmagic-dev
+                apt-get install libmagic-dev
         - installer librairie PCRE
-        	apt-get install libpcre3 libpcre3-dev
+                apt-get install libpcre3 libpcre3-dev
+
 
   $ tar -Jxf xapian-omega-1.2.0.tar.xz
+
 
   $ ./configure [--prefix=/opt/lampp/xapian] [XAPIAN_CONFIG=/opt/lampp/xapian/bin/xapian_config] 
                 [PCRE_CONFIG=/opt/lampp/bin/pcre-config]
@@ -50,24 +48,47 @@ Options:
   make
   make install
 
+
 Parsers:
-	wget http://www.xpdfreader.com/dl/xpdf-tools-linux-4.00.tar.gz (copier bin64/* dans /usr/local/bin)
-	wget http://ftp.wagner.pp.ru/pub/catdoc/catdoc-0.95.tar.gz 
+        wget http://www.xpdfreader.com/dl/xpdf-tools-linux-4.00.tar.gz (copier bin64/* dans /usr/local/bin)
+        wget http://ftp.wagner.pp.ru/pub/catdoc/catdoc-0.95.tar.gz 
+
+
+****
+Creation de la base
+
+
+omindex  D[base]  U[racine_URL]  [empl. fichiers]
+
+
+omindex  -Dbase1  -U/documents/docs  docs 
+   -Fapplication/msword:'catdoc'        association MIME
+   -Mdoc:application/msword                MIME type
+   --overwrite : re-create database
+   -v : verbose
+   -h : help
+   
+recherche:
+/usr/local/bin/simplesearch  [base]  [entretien]
 
 
 
 
 ****
 Installing Xapian-Bindings
-	https://xapian.org/docs/bindings/php/
+        https://xapian.org/docs/bindings/php/
+
 
 Assuming you have a suitable version of PHP installed, running configure will automatically enable the PHP bindings, and make install will install the extension shared library in the location reported by php-config --extension-dir.
 
+
 Options:
         - installer librairie php
-        	apt-get install php5-dev
+                apt-get install php5-dev
+
 
   $ tar -Jxf xapian-bindings-1.2.0.tar.xz
+
 
   ./configure
   make check
@@ -75,12 +96,15 @@ Options:
   make install
 
 
+
+
 Check that php.ini has a line like extension_dir = "<location reported by php-config --extension-dir>".
+
 
 Then add this line to php.ini: extension = xapian.so (or whatever the library is called - not all UNIX systems use .so as the extension, and MS Windows uses .dll).
 
+
 If you're using PHP as a webserver module (e.g. mod_php with Apache), you may need to restart the webserver for this change to take effect.
 
+
 You also need to add include&nbsp;"xapian.php" to your PHP scripts which use Xapian in order to get the PHP class wrappers.
-
-
