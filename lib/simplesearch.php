@@ -1,5 +1,27 @@
 <?php
 
+function filterSearch($results) {
+
+	global $t_repertoires_sensibles;
+	$filter = array();
+	//echo 'DEB';
+	foreach( $results as $result ) {
+
+		$found = false;
+
+		foreach( $t_repertoires_sensibles as $dossier ) {
+
+			if( preg_match("/\/{$dossier}\//", $result['champs']['url']) ) {
+
+				$found = true;
+				break;
+			}
+		}
+		if( !$found )	$filter[] = $result;
+	}
+	return $filter;
+}
+
 function simpleSearch ($paramQuery) {
 
     include "lib/xapian.php";
@@ -73,6 +95,7 @@ function cutData( $chaine ) {
 }
 
 
+/*
 function getSearchCsv() {
 
     $handle = fopen("xapiansearch/result.txt", "r");
@@ -86,7 +109,6 @@ function getSearchCsv() {
 
     return $data;
 }
-/*
 1;100%;71;url=/documents/docs/Book noir agence (Fabien C)/BOOK NOIR Tarifs/source/14-1 TARIF 2017 4FLEET TC4.pdf sample=BAREME DES PRESTATIONS 2017 Tarif en vigueur à partir du 01.01.2017 Tarif 2017 Tourisme & petit utilitaire Pneumatiques DESIGNATION Forfait "montage" Ce forfait comprend ;dépose/pose de la roue démontage/montage du pneu remplacement de la valve caoutchouc mise à la pression équilibrage (masses comprises) serrage à la clé dynamométrique De 10" à 16" De 17" et ou Runflat Forfait permutation Sécurité 2 roues Ce forfait comprend dépose/pose des 2 roues permutation équilibrage ... caption=TARIF 2017 4FLEET TC4 author=NGI4488 type=application/pdf modtime=1510665152 size=521743
 */
 ?>

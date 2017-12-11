@@ -42,7 +42,7 @@ if( isset($_GET['p']) && !empty($_GET['p']) ) {
 	}
 }
 
-debug($_POST);
+//debug($_POST);
 
 $titles  = !empty($_POST['titlemode']) ? ($_POST['titlemode'] == 'name'): true;
 $query = !empty($_POST['query']) ? $_POST['query'] : '';
@@ -53,9 +53,16 @@ if ($titles) {
 	asort($results);
 }
 else {
-	$results = !empty($query) ? simpleSearch($query) : '';
+	if( !empty($query) ) {
+      
+        $results = simpleSearch($query);
+    	$results = filterSearch($results);
+    }
+    else{
+        $results = '';
+    }
 }
-//debug($results);
+//debug($results, true);
 
 ?>
 
@@ -176,7 +183,7 @@ else {
 	<?php if ($titles): ?>
                 <div class="col-xs-6">
                   <b>
-                  <label>Nom de document ou dossier contenant</label>
+                  <label>Nom de document ou de dossier contenant</label>
                   </b>
                   <input id="mySearch" type="text" class="form-control warning" value="<?= $query ?>">
                 </div>
