@@ -84,7 +84,10 @@ function shortenString($chaine, $max=300) {
 function normalizeString($chaine) {
 
 	return fixEncoding($chaine);
-	
+}
+function walkNormalizeString(&$chaine, $key) {
+
+	$chaine = fixEncoding($chaine);
 }
 
 // permet de formater de la taille du fichier
