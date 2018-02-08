@@ -4,7 +4,7 @@ function filterSearch($results) {
 
 	global $t_repertoires_sensibles;
 	$filter = array();
-	//echo 'DEB';
+
 	foreach( $results as $result ) {
 
 		$found = false;
